@@ -6,8 +6,8 @@ public class ManageKeyBoard : MonoBehaviour
 {
     private Dictionary<string, List<string>> adjList;// 인접리스트
     public List<key> keyBoard;// 각 칸을 보관하는 리스트
-    public static int numV = 27;// 총 정점 개수
-    public static int enemyV = 20;// 적이 생성될 수 있는 정점 개수
+    public static int numV = 45;// 총 정점 개수
+    public static int enemyV = 26;// 적이 생성될 수 있는 정점 개수
 
     void Start()
     {
@@ -26,17 +26,19 @@ public class ManageKeyBoard : MonoBehaviour
         keyBoard = new List<key>();
 
         // 키보드의 각 행을 정의
-        //string[] row0 = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "+" };
-        string[] row1 = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P" };
-        string[] row2 = { "A", "S", "D", "F", "G", "H", "J", "K", "L" };
-        string[] row3 = { "Z", "X", "C", "V", "B", "N", "M", "<"};
+        string[] row0 = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "+" };
+        string[] row1 = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "{", "}"};
+        string[] row2 = { "A", "S", "D", "F", "G", "H", "J", "K", "L", ":", "\""};
+        string[] row3 = { "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?"};
 
         // 행 내의 간선 연결
-        AddEdges(row1, true);
+        AddEdges(row0, true);
+        AddEdges(row1, false);
         AddEdges(row2, false);
         AddEdges(row3, true);
 
         // 행 사이의 인접한 키 추가
+        AddRowNeighbors(row0, row1);
         AddRowNeighbors(row1, row2);
         AddRowNeighbors(row2, row3);
     }
@@ -93,34 +95,47 @@ public class ManageKeyBoard : MonoBehaviour
     }
 
 
-    public struct key//각 칸
+    public class key//각 칸
     {
         public string name;
         public int attack;// 공격 할당
+        public int delay;
         public bool isEnemy;// 적 존재 유무
         public bool isSuburb;// 최외곽 유무
+        
 
         public key(string name)
         {
             this.name = name;
             attack = -1;//공격이 할당 안된 상태
+            delay = -1;
             isEnemy = false;
             isSuburb = false;
         }
 
-        public void setEnemy(bool enemy)//적 생성 여부
+        public void Countdelay(GameObject enemy)
+        {
+            if (delay >= 0)
+            {
+                delay -= 1;
+            }
+            if (delay == 0)
+            {
+                GameObject enemy1 = Instantiate(enemy, GameObject.Find(this.name).transform);
+                enemy1.SetActive(true);
+                GameObject.Find("back_" + this.name).GetComponent<SpriteRenderer>().color = Color.white;
+            }
+        }
+
+        public void SetEnemy(bool enemy)//적 생성 여부
         {
             this.isEnemy = enemy;
             if (enemy)//적이 생성되면 색 변경 -> 추후 스프라이트 생성으로 변경
             {
-                GameObject.Find(this.name).GetComponent<SpriteRenderer>().color = Color.red;
-            }
-            else
-            {
-                GameObject.Find(this.name).GetComponent<SpriteRenderer>().color = Color.white;
+                GameObject.Find("back_" + this.name).GetComponent<SpriteRenderer>().color = Color.red;
+                 this.delay = 1;
             }
         }
-
     }
 
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Timer : MonoBehaviour
 {
     public GameObject manageEnemy;
+    public GameObject manageKeyBoard;
     public static float cycle = 1;//한 사이클의 단위
     private float time;
 
@@ -20,7 +21,7 @@ public class Timer : MonoBehaviour
         time += Time.deltaTime;
         if(time >= cycle)
         {
-            manageEnemy.GetComponent<ManageEnemy>().SummonEnemy();
+            manageEnemy.GetComponent<ManageEnemy>().CalcDelay();
             time = 0;
         }
     }
