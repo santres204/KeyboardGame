@@ -29,20 +29,19 @@ public class Player : MonoBehaviour
 
         adjList = manageKeyBoard.adjList;
 
-        currentKey = "A";
+        currentKey = "G";
         MoveToKey(currentKey);
-
-        PrintAdjList(); // adjList 출력
     }
 
 
     public void MoveToKey(string key)
     {
-        currentKey = key;
+        key = "back_" + key;
         GameObject keyObj = GameObject.Find(key);
         if (keyObj != null)
         {
             transform.position = keyObj.transform.position;
+            currentKey = key.Split('_')[1];
         }
     }
 
@@ -60,13 +59,87 @@ public class Player : MonoBehaviour
                 if (Input.GetKeyDown(keyCode))
                 {
                     string key = keyCode.ToString();
-                    if (key.Length == 1 && char.IsLetter(key[0]))
+                    if (key.Length == 1 && (char.IsLetter(key[0]) || IsSpecialCharacter(key[0])))
                     {
                         AttemptMove(key.ToUpper());
+                    }
+                    switch (keyCode)
+                    {
+                        case KeyCode.Alpha1:
+                            AttemptMove("1");
+                            break;
+                        case KeyCode.Alpha2:
+                            AttemptMove("2");
+                            break;
+                        case KeyCode.Alpha3:
+                            AttemptMove("3");
+                            break;
+                        case KeyCode.Alpha4:
+                            AttemptMove("4");
+                            break;
+                        case KeyCode.Alpha5:
+                            AttemptMove("5");
+                            break;
+                        case KeyCode.Alpha6:
+                            AttemptMove("6");
+                            break;
+                        case KeyCode.Alpha7:
+                            AttemptMove("7");
+                            break;
+                        case KeyCode.Alpha8:
+                            AttemptMove("8");
+                            break;
+                        case KeyCode.Alpha9:
+                            AttemptMove("9");
+                            break;
+                        case KeyCode.Alpha0:
+                            AttemptMove("0");
+                            break;
+                        case KeyCode.Minus:
+                            AttemptMove("-");
+                            break;
+                        case KeyCode.Equals:
+                            AttemptMove("+");
+                            break;
+                        case KeyCode.LeftBracket:
+                            AttemptMove("{");
+                            break;
+                        case KeyCode.RightBracket:
+                            AttemptMove("}");
+                            break;
+                        case KeyCode.Semicolon:
+                            AttemptMove(":");
+                            break;
+                        case KeyCode.Quote:
+                            AttemptMove("\"");
+                            break;
+                        case KeyCode.Comma:
+                            AttemptMove("<");
+                            break;
+                        case KeyCode.Period:
+                            AttemptMove(">");
+                            break;
+                        case KeyCode.Slash:
+                            AttemptMove("?");
+                            break;
                     }
                 }
             }
         }
+    }
+
+    private bool IsSpecialCharacter(char c)
+    {
+        // 특수문자에 대한 검사 로직을 추가
+        char[] specialCharacters = { '-', '=', '[', ']', ';', '\'', ',', '.', '/' };
+        foreach (char specialCharacter in specialCharacters)
+        {
+            if (c == specialCharacter)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -74,7 +147,7 @@ public class Player : MonoBehaviour
     private void AttemptMove(string key)
     {
         Debug.Log(currentKey + "에서 " + key + "로 이동 시도");
-
+        
         if (adjList[currentKey].Contains(key))
         {
             MoveToKey(key);
@@ -86,32 +159,4 @@ public class Player : MonoBehaviour
         }
     }
 
-    // 디버깅용
-    private void PrintAdjList()
-    {
-        string[] row1 = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P" };
-        string[] row2 = { "A", "S", "D", "F", "G", "H", "J", "K", "L" };
-        string[] row3 = { "Z", "X", "C", "V", "B", "N", "M", "<" };
-
-        Debug.Log("Row 1:");
-        PrintRowAdjList(row1);
-
-        Debug.Log("Row 2:");
-        PrintRowAdjList(row2);
-
-        Debug.Log("Row 3:");
-        PrintRowAdjList(row3);
-    }
-
-    private void PrintRowAdjList(string[] row)
-    {
-        foreach (var key in row)
-        {
-            if (adjList.ContainsKey(key))
-            {
-                string adjacentKeys = string.Join(", ", adjList[key]);
-                Debug.Log("Key: " + key + " -> Adjacent Keys: " + adjacentKeys);
-            }
-        }
-    }
 }

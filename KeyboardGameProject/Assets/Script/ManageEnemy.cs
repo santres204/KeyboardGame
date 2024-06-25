@@ -38,8 +38,8 @@ public class ManageEnemy : MonoBehaviour
         }
         if (i < ManageKeyBoard.numV)
         {
-            Debug.Log("num: " + num);
-            Debug.Log("i: " + i);
+            // Debug.Log("num: " + num);
+            // Debug.Log("i: " + i);
             keyBoard[i].SetEnemy(true);// 중단 값에서 적 생성
         }
     }
