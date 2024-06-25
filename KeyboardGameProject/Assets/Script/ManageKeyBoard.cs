@@ -4,14 +4,15 @@ using UnityEngine;
 
 public class ManageKeyBoard : MonoBehaviour
 {
-    private Dictionary<string, List<string>> adjList;// 인접리스트
+    public Dictionary<string, List<string>> adjList;// 인접리스트
     public List<key> keyBoard;// 각 칸을 보관하는 리스트
     public static int numV = 45;// 총 정점 개수
     public static int enemyV = 26;// 적이 생성될 수 있는 정점 개수
 
     void Start()
     {
-        KeyBoardInit();//인접리스트 초기화
+        KeyBoardInit(); //인접리스트 초기화
+        // PrintAdjList(); 
     }
 
     // Update is called once per frame
@@ -84,19 +85,50 @@ public class ManageKeyBoard : MonoBehaviour
                 if (lowerIndex >= 0)// 좌측 아래칸 연결
                 {
                     adjList[upperKey].Add(lowerRow[lowerIndex]);
+                    adjList[lowerRow[lowerIndex]].Add(upperKey);
                 }
 
                 if (i < lowerRow.Length)//우측 아래칸 연결
                 {
                     adjList[upperKey].Add(lowerRow[i]);
+                    adjList[lowerRow[i]].Add(upperKey);
                 }
             }
         }
     }
 
+    // 디버깅용
+    private void PrintAdjList()
+    {
+        string[] row1 = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P" };
+        string[] row2 = { "A", "S", "D", "F", "G", "H", "J", "K", "L" };
+        string[] row3 = { "Z", "X", "C", "V", "B", "N", "M", "<" };
+
+        Debug.Log("Row 1:");
+        PrintRowAdjList(row1);
+
+        Debug.Log("Row 2:");
+        PrintRowAdjList(row2);
+
+        Debug.Log("Row 3:");
+        PrintRowAdjList(row3);
+    }
+
+    private void PrintRowAdjList(string[] row)
+    {
+        foreach (var key in row)
+        {
+            if (adjList.ContainsKey(key))
+            {
+                string adjacentKeys = string.Join(", ", adjList[key]);
+                Debug.Log("Key: " + key + " -> Adjacent Keys: " + adjacentKeys);
+            }
+        }
+    }
 
     public class key//각 칸
     {
+        
         public string name;
         public int attack;// 공격 할당
         public int delay;
@@ -138,4 +170,5 @@ public class ManageKeyBoard : MonoBehaviour
         }
     }
 
+    
 }
