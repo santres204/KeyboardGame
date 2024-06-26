@@ -105,7 +105,7 @@ public class ManageKeyBoard : MonoBehaviour
         public int delay;
         public bool isEnemy;// 적 존재 유무
         public bool isSuburb;// 최외곽 유무
-        
+        public bool isAttack;
 
         public key(string name)
         {
@@ -114,6 +114,7 @@ public class ManageKeyBoard : MonoBehaviour
             delay = -1;
             isEnemy = false;
             isSuburb = false;
+            isAttack = false;
         }
 
         public void Countdelay(GameObject enemy)

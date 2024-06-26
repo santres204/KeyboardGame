@@ -6,6 +6,7 @@ public class Timer : MonoBehaviour
 {
     public GameObject manageEnemy;
     public GameObject manageKeyBoard;
+    public GameObject attack;
     public static float cycle = 1;//한 사이클의 단위
     private float time;
 
@@ -22,6 +23,7 @@ public class Timer : MonoBehaviour
         if(time >= cycle)
         {
             manageEnemy.GetComponent<ManageEnemy>().CalcDelay();
+            attack.GetComponent<Attack>().SummonAttack();
             time = 0;
         }
     }
