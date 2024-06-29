@@ -7,7 +7,7 @@ public class Timer : MonoBehaviour
     public GameObject manageEnemy;
     public GameObject manageKeyBoard;
     public GameObject attack;
-    public static float cycle = 1;//한 사이클의 단위
+    public static float cycle = 2;//한 사이클의 단위
     private float time;
 
     // Start is called before the first frame update

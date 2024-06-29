@@ -6,12 +6,14 @@ public class ManageEnemy : MonoBehaviour
 {
     public GameObject manageKeyboard;
     public GameObject enemyPrefab;
+    List<int> random;
     List<ManageKeyBoard.key> keyBoard;
 
     // Start is called before the first frame update
     void Start()
     {
-         keyBoard = manageKeyboard.GetComponent<ManageKeyBoard>().keyBoard;//리스트 가져오기
+        keyBoard = manageKeyboard.GetComponent<ManageKeyBoard>().keyBoard;//리스트 가져오기\
+        random = new List<int>();
     }
 
     // Update is called once per frame
@@ -22,25 +24,26 @@ public class ManageEnemy : MonoBehaviour
 
     public void SummonEnemy()// 적 생성
     {
-        int num = Random.Range(1, ManageKeyBoard.enemyV + 1);// 적이 생성될 수 있는 칸의 범주
-        int i, now = 0;
+        random.Clear();
+        int num = 0;
+        int i;
         
         for(i = 0; i < ManageKeyBoard.numV; ++i)
         {
-            if (keyBoard[i].isSuburb && !keyBoard[i].isEnemy)// 적이 생성 가능할 시에 +1
+            do
             {
-                now += 1;
-            }
-            if(now >= num)// 랜덤 값과 동일해지면 중단
-            {
+                num = Random.Range(0, ManageKeyBoard.numV);// 적이 생성될 수 있는 칸의 범주
+            } while (random.Contains(num));
+            if (keyBoard[num].isSuburb && !keyBoard[num].isEnemy)// 적이 생성 가능할 시에 +1
                 break;
-            }
+            else
+                random.Add(num);
         }
         if (i < ManageKeyBoard.numV)
         {
             // Debug.Log("num: " + num);
             // Debug.Log("i: " + i);
-            keyBoard[i].SetEnemy(true);// 중단 값에서 적 생성
+            keyBoard[num].SetEnemy(true);// 중단 값에서 적 생성
         }
     }
 
