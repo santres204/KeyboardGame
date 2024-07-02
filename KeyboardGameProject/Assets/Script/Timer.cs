@@ -6,7 +6,8 @@ public class Timer : MonoBehaviour
 {
     public GameObject manageEnemy;
     public GameObject manageKeyBoard;
-    public static float cycle = 1;//한 사이클의 단위
+    public GameObject attack;
+    public static float cycle = 2;//한 사이클의 단위
     private float time;
 
     // Start is called before the first frame update
@@ -22,6 +23,7 @@ public class Timer : MonoBehaviour
         if(time >= cycle)
         {
             manageEnemy.GetComponent<ManageEnemy>().CalcDelay();
+            attack.GetComponent<Attack>().SummonAttack();
             time = 0;
         }
     }
