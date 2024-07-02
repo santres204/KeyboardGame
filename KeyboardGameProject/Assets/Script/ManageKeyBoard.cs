@@ -97,35 +97,6 @@ public class ManageKeyBoard : MonoBehaviour
         }
     }
 
-    // 디버깅용
-    private void PrintAdjList()
-    {
-        string[] row1 = { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P" };
-        string[] row2 = { "A", "S", "D", "F", "G", "H", "J", "K", "L" };
-        string[] row3 = { "Z", "X", "C", "V", "B", "N", "M", "<" };
-
-        Debug.Log("Row 1:");
-        PrintRowAdjList(row1);
-
-        Debug.Log("Row 2:");
-        PrintRowAdjList(row2);
-
-        Debug.Log("Row 3:");
-        PrintRowAdjList(row3);
-    }
-
-    private void PrintRowAdjList(string[] row)
-    {
-        foreach (var key in row)
-        {
-            if (adjList.ContainsKey(key))
-            {
-                string adjacentKeys = string.Join(", ", adjList[key]);
-                Debug.Log("Key: " + key + " -> Adjacent Keys: " + adjacentKeys);
-            }
-        }
-    }
-
     public class key//각 칸
     {
         
@@ -134,7 +105,7 @@ public class ManageKeyBoard : MonoBehaviour
         public int delay;
         public bool isEnemy;// 적 존재 유무
         public bool isSuburb;// 최외곽 유무
-        
+        public bool isAttack;
 
         public key(string name)
         {
@@ -143,6 +114,7 @@ public class ManageKeyBoard : MonoBehaviour
             delay = -1;
             isEnemy = false;
             isSuburb = false;
+            isAttack = false;
         }
 
         public void Countdelay(GameObject enemy)
