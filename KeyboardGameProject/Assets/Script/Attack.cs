@@ -5,7 +5,9 @@ using UnityEngine;
 public class Attack : MonoBehaviour
 {
     private List<ManageKeyBoard.key> keyBoard; // 칸 리스트
+    private int attackNum;  //총 공격 개수(현재 스테이지 기준)
     public GameObject attack;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -50,7 +52,7 @@ public class Attack : MonoBehaviour
     public void SummonAttack()// 공격 소환
     {
         int i, num = 0;
-        for(i = 0; i < ManageKeyBoard.numV; ++i)
+        for(i = 0; i < ManageKeyBoard.numV; ++i)//로직 수정해야함
         {
             num = Random.Range(0, ManageKeyBoard.numV);// 랜덤 범위로 공격 할당
             if (!keyBoard[num].isAttack)
@@ -60,13 +62,15 @@ public class Attack : MonoBehaviour
         }
         if (i < ManageKeyBoard.numV)
         {
+            int attackID = Random.Range(1, 2);
             GameObject.Find(keyBoard[num].name).GetComponent<Transform>().Find("Attack(Clone)").GetComponent<SpriteRenderer>().sprite 
-                = Resources.Load<Sprite>("Image/" + "attack");
+                = Resources.Load<Sprite>("Image/" + "attack" + attackID.ToString());
             keyBoard[num].isAttack = true;
+            keyBoard[num].attack = attackID;
         }
     }
 
-    class Attack_kind
+    public class Attack_kind
     {
         public int damage;
     }
