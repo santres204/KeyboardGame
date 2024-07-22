@@ -117,7 +117,7 @@ public class ManageKeyBoard : MonoBehaviour
             isAttack = false;
         }
 
-        public void Countdelay(GameObject enemy)
+        public void Countdelay(GameObject enemy)//스프라이트 생성
         {
             if (delay >= 0)
             {
@@ -127,6 +127,9 @@ public class ManageKeyBoard : MonoBehaviour
             {
                 GameObject enemy1 = Instantiate(enemy, GameObject.Find(this.name).transform);
                 enemy1.SetActive(true);
+                enemy1.GetComponent<Enemy>().hp = 1;
+                enemy1.GetComponent<Enemy>().attackDamage = 1;
+                enemy1.GetComponent<Enemy>().moveCycle = 1;
                 GameObject.Find("back_" + this.name).GetComponent<SpriteRenderer>().color = Color.white;
             }
         }
@@ -134,7 +137,7 @@ public class ManageKeyBoard : MonoBehaviour
         public void SetEnemy(bool enemy)//적 생성 여부
         {
             this.isEnemy = enemy;
-            if (enemy)//적이 생성되면 색 변경 -> 추후 스프라이트 생성으로 변경
+            if (enemy)//적이 생성되면 색 변경 
             {
                 GameObject.Find("back_" + this.name).GetComponent<SpriteRenderer>().color = Color.red;
                  this.delay = 1;

@@ -55,7 +55,9 @@ public class Attack : MonoBehaviour
         for(i = 0; i < ManageKeyBoard.numV; ++i)//로직 수정해야함
         {
             num = Random.Range(0, ManageKeyBoard.numV);// 랜덤 범위로 공격 할당
-            if (!keyBoard[num].isAttack)
+            Player player = FindObjectOfType<Player>();
+
+            if (!keyBoard[num].isAttack && keyBoard[num].name != player.currentKey)
             {
                 break;
             }

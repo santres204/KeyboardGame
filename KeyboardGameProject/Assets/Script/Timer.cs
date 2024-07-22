@@ -24,6 +24,7 @@ public class Timer : MonoBehaviour
         {
             manageEnemy.GetComponent<ManageEnemy>().CalcDelay();
             attack.GetComponent<Attack>().SummonAttack();
+            manageEnemy.GetComponent<ManageEnemy>().moveEnemy();
             time = 0;
         }
     }
