@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     public float hp;
     public int attackDamage;
     public int moveCycle;
+    public int deathEXP;
 
     private int nowCycle;
     private Dictionary<string, List<string>> adjList;
@@ -15,6 +16,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         ManageKeyBoard manageKeyBoard = FindObjectOfType<ManageKeyBoard>();
+        deathEXP = 1;
         adjList = manageKeyBoard.adjList;
         nowCycle = moveCycle;
         keyBoard = manageKeyBoard.keyBoard;
@@ -85,6 +87,7 @@ public class Enemy : MonoBehaviour
         hp -= damage;
         if (hp <= 0)
         {
+            FindAnyObjectByType<Experience>().AddEXP(deathEXP);
             Destroy(this.gameObject);
         }
     }

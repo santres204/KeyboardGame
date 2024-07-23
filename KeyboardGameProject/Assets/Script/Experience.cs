@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+
 
 public class Experience : MonoBehaviour
 {
@@ -8,12 +10,16 @@ public class Experience : MonoBehaviour
     private List<int> EXPList;
 
     public int EXPLevel;
+    public GameObject levelText;
 
     // Start is called before the first frame update
     void Start()
     {
+        EXPList = new List<int>(10);
         EXP = 0;
         EXPLevel = 0;
+        InitEXPList();
+
     }
 
     // Update is called once per frame
@@ -30,9 +36,12 @@ public class Experience : MonoBehaviour
     
     private void CalcEXPLevel()
     {
-        if(EXPList[EXPLevel] > EXP)
+        if(EXPList[EXPLevel] <= EXP)
         {
+            Debug.Log("asdasdasdasd");
+
             EXPLevel += 1;
+            levelText.GetComponent<TextMeshProUGUI>().text = "Level " + EXPLevel.ToString();
         }
     }
 
