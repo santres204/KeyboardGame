@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.UI;
 
 public class Experience : MonoBehaviour
 {
@@ -11,6 +11,7 @@ public class Experience : MonoBehaviour
 
     public int EXPLevel;
     public GameObject levelText;
+    public GameObject EXPBar;
 
     // Start is called before the first frame update
     void Start()
@@ -19,7 +20,6 @@ public class Experience : MonoBehaviour
         EXP = 0;
         EXPLevel = 0;
         InitEXPList();
-
     }
 
     // Update is called once per frame
@@ -32,6 +32,7 @@ public class Experience : MonoBehaviour
     {
         EXP += addedEXP;
         CalcEXPLevel();
+        
     }
     
     private void CalcEXPLevel()
@@ -40,16 +41,18 @@ public class Experience : MonoBehaviour
         {
             Debug.Log("asdasdasdasd");
 
+            EXP -= EXPList[EXPLevel];
             EXPLevel += 1;
-            levelText.GetComponent<TextMeshProUGUI>().text = "Level " + EXPLevel.ToString();
+            levelText.GetComponent<TextMeshProUGUI>().text = "Level " + (EXPLevel+1).ToString();
         }
+        EXPBar.GetComponent<Slider>().value = (float)EXP / (float)EXPList[EXPLevel];
     }
 
     private void InitEXPList()
     {
         for(int i = 0; i < 10; ++i)
         {
-            EXPList.Add(i);
+            EXPList.Add(i * 2);
         }
     }
 }

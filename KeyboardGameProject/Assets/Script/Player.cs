@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public string currentKey; // 현재 위치
+
     private Dictionary<string, List<string>> adjList; // 인접리스트
     private InteractAttack interactAttack;
 

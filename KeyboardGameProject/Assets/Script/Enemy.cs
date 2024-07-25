@@ -83,7 +83,6 @@ public class Enemy : MonoBehaviour
 
     public void GetDamage(int damage)
     {
-        
         hp -= damage;
         if (hp <= 0)
         {
