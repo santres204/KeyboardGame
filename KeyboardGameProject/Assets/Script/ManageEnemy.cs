@@ -58,7 +58,7 @@ public class ManageEnemy : MonoBehaviour
         SummonEnemy();
     }
 
-    public void moveEnemy()
+    public void moveEnemy()//전체 적 찾아서 이동
     {
         foreach(ManageKeyBoard.key key in keyBoard)
         {

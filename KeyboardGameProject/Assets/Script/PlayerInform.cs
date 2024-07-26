@@ -21,7 +21,7 @@ public class PlayerInform : MonoBehaviour
         
     }
 
-    public void PlayerDamaged(float damage)
+    public void PlayerDamaged(float damage)//플레이어가 적에게 데미지 입음
     {
         hp -= damage;
         hpBar.GetComponent<Slider>().value = hp / maxHp;

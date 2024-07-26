@@ -51,12 +51,12 @@ public class InteractAttack : MonoBehaviour
 
     private void Input_Attack()//공격 입력 받기
     {
-        if(attackStack.Count < 1)
+        if(attackStack.Count < 1)//스택 없으면 종료
         {
             Debug.Log("스택 비어있음");
             return;
         }
-        for (int i = 1; i <= 3; ++i)
+        for (int i = 1; i <= 3; ++i)//스택 비우기
         {
             GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + i.ToString()).GetComponent<SpriteRenderer>().sprite = null;
         }
@@ -64,9 +64,9 @@ public class InteractAttack : MonoBehaviour
         Player player = FindObjectOfType<Player>();
         currentKey = player.currentKey;
 
-        switch (attackStack.Pop())
+        switch (attackStack.Pop())//각 공격 종류에 따라서 다르게 처리하기
         {
-            case 1:
+            case 1://기본 공격
                 foreach (string key in adjList[currentKey])
                 {
                     GameObject.Find("back_" + key).GetComponent<SpriteRenderer>().color = Color.green;
@@ -78,14 +78,13 @@ public class InteractAttack : MonoBehaviour
                     {
 
                     }
-                    
                 }
                 break;
             default:
                 break;
         }
 
-        StartCoroutine(InitializeattackColor(adjList[currentKey]));
+        StartCoroutine(InitializeattackColor(adjList[currentKey]));//공격 표시 / 이후 애니메이션으로 구현
         attackStack.Clear();
     }
 
@@ -99,7 +98,7 @@ public class InteractAttack : MonoBehaviour
         }
     }
 
-    public void InputStack(string currentKey)
+    public void InputStack(string currentKey)//스택에 공격 넣기
     {
         foreach (ManageKeyBoard.key key in keyBoard)
         {
@@ -107,7 +106,7 @@ public class InteractAttack : MonoBehaviour
             {
                 if (key.isAttack)
                 {
-                    if (attackStack.Count < 3)
+                    if (attackStack.Count < 3)//최대 스택3 제약
                     {
                         attackStack.Push(key.attack);
                         GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + attackStack.Count.ToString()).GetComponent<SpriteRenderer>().sprite

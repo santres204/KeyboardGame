@@ -40,7 +40,7 @@ public class Attack : MonoBehaviour
         
     }
 
-    private void CreateAttackField()
+    private void CreateAttackField()//전체 맵 공격 필드 생성
     {
         for(int i = 0; i < keyBoard.Count; ++i)
         {

@@ -28,14 +28,13 @@ public class Experience : MonoBehaviour
         
     }
 
-    public void AddEXP(int addedEXP)
+    public void AddEXP(int addedEXP)//적 처치시 작동
     {
         EXP += addedEXP;
         CalcEXPLevel();
-        
     }
     
-    private void CalcEXPLevel()
+    private void CalcEXPLevel()//경험치에 따른 경험치 레벨 처리
     {
         if(EXPList[EXPLevel] <= EXP)
         {
@@ -48,7 +47,7 @@ public class Experience : MonoBehaviour
         EXPBar.GetComponent<Slider>().value = (float)EXP / (float)EXPList[EXPLevel];
     }
 
-    private void InitEXPList()
+    private void InitEXPList()//처음 경험치 테이블 초기화 / 추후 JSON사용
     {
         for(int i = 0; i < 10; ++i)
         {
