@@ -19,7 +19,7 @@ public class ManageEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-            
+       
     }
 
     public void SummonEnemy()// Àû »ý¼º

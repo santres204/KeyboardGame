@@ -4366,6 +4366,7 @@ MonoBehaviour:
   manageEnemy: {fileID: 226359885}
   manageKeyBoard: {fileID: 157838295}
   attack: {fileID: 148640919}
+  player: {fileID: 1977858302}
 --- !u!1 &658472415
 GameObject:
   m_ObjectHideFlags: 0
@@ -11655,6 +11656,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentKey: 
+  turnMove: 0
 --- !u!114 &1977858306
 MonoBehaviour:
   m_ObjectHideFlags: 0
