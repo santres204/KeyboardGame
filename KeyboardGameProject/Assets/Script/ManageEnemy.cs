@@ -19,7 +19,7 @@ public class ManageEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-            
+       
     }
 
     public void SummonEnemy()// 적 생성
@@ -34,15 +34,16 @@ public class ManageEnemy : MonoBehaviour
             {
                 num = Random.Range(0, ManageKeyBoard.numV);// 적이 생성될 수 있는 칸의 범주
             } while (random.Contains(num));
-            if (keyBoard[num].isSuburb && !keyBoard[num].isEnemy)// 적이 생성 가능할 시에 +1
+
+            Player player = FindObjectOfType<Player>();
+
+            if (keyBoard[num].isSuburb && !keyBoard[num].isEnemy && player.currentKey != keyBoard[num].name)// 적이 생성 가능할 시에 +1
                 break;
             else
                 random.Add(num);
         }
         if (i < ManageKeyBoard.numV)
         {
-            // Debug.Log("num: " + num);
-            // Debug.Log("i: " + i);
             keyBoard[num].SetEnemy(true);// 중단 값에서 적 생성
         }
     }
@@ -55,6 +56,21 @@ public class ManageEnemy : MonoBehaviour
         }
 
         SummonEnemy();
+    }
+
+    public void moveEnemy()//전체 적 찾아서 이동
+    {
+        foreach(ManageKeyBoard.key key in keyBoard)
+        {
+            try
+            {
+                GameObject.Find(key.name).GetComponent<Transform>().Find("Enemy1(Clone)").GetComponent<Enemy>().MoveToPlayer();
+            }
+            catch
+            {
+                Debug.Log("적 존재 X");
+            }
+        }
     }
 
 }
