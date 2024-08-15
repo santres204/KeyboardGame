@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
-    public float hp;
+    public float maxHp;
     public int attackDamage;
     public int moveCycle;
     public int deathEXP;
 
+    private float hp;
     private int nowCycle;
     private Dictionary<string, List<string>> adjList;
     private List<ManageKeyBoard.key> keyBoard;
@@ -20,6 +22,7 @@ public class Enemy : MonoBehaviour
         adjList = manageKeyBoard.adjList;
         nowCycle = moveCycle;
         keyBoard = manageKeyBoard.keyBoard;
+        hp = maxHp;
     }
 
     // Update is called once per frame
@@ -85,7 +88,22 @@ public class Enemy : MonoBehaviour
         if (hp <= 0)//경험치 획득 및 적 삭제
         {
             FindAnyObjectByType<Experience>().AddEXP(deathEXP);
+            foreach (ManageKeyBoard.key key in keyBoard)
+            {
+                if (key.name.Equals(this.transform.parent.name))
+                {
+                    key.isEnemy = false;
+                    break;
+                }
+            }
             Destroy(this.gameObject);
+        }
+        else//살면 hpbar 띄우기
+        {
+            GameObject hpPrefab = Resources.Load<GameObject>("Prefab/" + "EnemyHp");//프리펩 가져오기
+            GameObject hpBar = Instantiate(hpPrefab, this.transform);
+            hpBar.SetActive(true);
+            hpBar.transform.Find("EnemyHp").GetComponent<Slider>().value = (hp / maxHp);//현재 hp비율에 따라 hpBar 조절
         }
     }
 

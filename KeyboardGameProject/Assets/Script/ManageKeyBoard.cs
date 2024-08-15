@@ -9,8 +9,12 @@ public class ManageKeyBoard : MonoBehaviour
     public static int numV = 45;// 총 정점 개수
     public static int enemyV = 26;// 적이 생성될 수 있는 정점 개수
 
+    List<GameObject> enemyPrefabList;
+
+
     void Start()
     {
+        InitEnemyPrefab();
         KeyBoardInit(); //인접리스트 초기화
         // PrintAdjList(); 
     }
@@ -97,6 +101,15 @@ public class ManageKeyBoard : MonoBehaviour
         }
     }
 
+    private void InitEnemyPrefab()//적 프리펩 리스트화
+    {
+        enemyPrefabList = new List<GameObject>();
+        for (int i = 1; i < 3; i++)
+        {
+            enemyPrefabList.Add(Resources.Load<GameObject>("Prefab/" + "Enemy" + i.ToString()));
+        }
+    }
+
     public class key//각 칸
     {
         
@@ -127,9 +140,7 @@ public class ManageKeyBoard : MonoBehaviour
             {
                 GameObject enemy1 = Instantiate(enemy, GameObject.Find(this.name).transform);
                 enemy1.SetActive(true);
-                enemy1.GetComponent<Enemy>().hp = 1;
-                enemy1.GetComponent<Enemy>().attackDamage = 1;
-                enemy1.GetComponent<Enemy>().moveCycle = 1;
+                enemy1.name = "Enemy1(Clone)";
                 GameObject.Find("back_" + this.name).GetComponent<SpriteRenderer>().color = Color.white;
             }
         }
@@ -140,7 +151,7 @@ public class ManageKeyBoard : MonoBehaviour
             if (enemy)//적이 생성되면 색 변경 
             {
                 GameObject.Find("back_" + this.name).GetComponent<SpriteRenderer>().color = Color.red;
-                 this.delay = 1;
+                 this.delay = 2;
             }
         }
     }

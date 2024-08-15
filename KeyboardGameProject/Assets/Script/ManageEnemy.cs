@@ -5,15 +5,23 @@ using UnityEngine;
 public class ManageEnemy : MonoBehaviour
 {
     public GameObject manageKeyboard;
-    public GameObject enemyPrefab;
+    //public GameObject enemyPrefab1;
+    //public GameObject enemyPrefab2;
+
+    private int summonDelay = 2; //몹 소환 주기(플레이어 이동 기준)
+    private int nowDelay;
     List<int> random;
+    List<GameObject> enemyPrefabList;
     List<ManageKeyBoard.key> keyBoard;
 
     // Start is called before the first frame update
     void Start()
     {
+        InitEnemyPrefab();
         keyBoard = manageKeyboard.GetComponent<ManageKeyBoard>().keyBoard;//리스트 가져오기\
         random = new List<int>();
+        nowDelay = summonDelay;
+        
     }
 
     // Update is called once per frame
@@ -22,8 +30,22 @@ public class ManageEnemy : MonoBehaviour
        
     }
 
+    private void InitEnemyPrefab()//적 프리펩 리스트화
+    {
+        enemyPrefabList = new List<GameObject>();
+        for (int i = 1; i <= 3; i++)
+        {
+            enemyPrefabList.Add(Resources.Load<GameObject>("Prefab/" + "Enemy" + i.ToString()));//에셋에서 프리펩 가져오기
+        }
+    }
+
     public void SummonEnemy()// 적 생성
     {
+        if(nowDelay > 0)//적 소환 주기 계산
+        {
+            nowDelay -= 1;
+            return;
+        }
         random.Clear();
         int num = 0;
         int i;
@@ -46,13 +68,15 @@ public class ManageEnemy : MonoBehaviour
         {
             keyBoard[num].SetEnemy(true);// 중단 값에서 적 생성
         }
+        nowDelay = summonDelay;
     }
 
     public void CalcDelay()
     {
         for (int i = 0; i < ManageKeyBoard.numV; ++i)
         {
-            keyBoard[i].Countdelay(enemyPrefab);
+            int enemyN = Random.Range(0, 3);//적 종류 중 랜덤 1개 선택
+            keyBoard[i].Countdelay(enemyPrefabList[enemyN]);//적 생성 딜레이에 넘겨주기
         }
 
         SummonEnemy();
