@@ -97,7 +97,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f79cc2d41447c064da4e0418bf12682f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD:KeyboardGameProject/Assets/Resources/Prefab/Enemy1.prefab
   hp: 1
   attackDamage: 1
   moveCycle: 1
   deathEXP: 1
+=======
+<<<<<<< Updated upstream:KeyboardGameProject/Assets/Prefab/Enemy1.prefab
+  hp: 0
+  attackDamage: 0
+  moveCycle: 0
+=======
+  maxHp: 1
+  attackDamage: 1
+  moveCycle: 2
+  deathEXP: 1
+>>>>>>> Stashed changes:KeyboardGameProject/Assets/Resources/Prefab/Enemy1.prefab
+>>>>>>> yun:KeyboardGameProject/Assets/Prefab/Enemy1.prefab

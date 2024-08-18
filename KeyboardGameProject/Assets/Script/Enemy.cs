@@ -31,36 +31,17 @@ public class Enemy : MonoBehaviour
         
     }
 
-    public void MoveToPlayer()//플레이어 향해서 이동
+    public void MoveToPlayer()
     {
-        if(nowCycle > 0)//자신의 이동 싸이클 수에 맞춰서 행동
+        if (nowCycle > 0)
         {
             nowCycle -= 1;
             return;
         }
 
-        bool addOK = false;// 임시
+        bool moved = false;
 
-        foreach (string keyName in adjList[this.transform.parent.name])//주변 칸 중 다른 적 없는 곳으로 이동
-        {
-            foreach (ManageKeyBoard.key key in keyBoard)
-            {
-
-                if (key.name.Equals(keyName))
-                {
-                    if (!key.isEnemy)
-                    {
-                        MoveToKey(keyName);
-                        key.isEnemy = true;
-                        addOK = true;
-                    }
-                    break;
-                }
-            }
-            if (addOK)
-                break;
-        }
-
+        // 현재 타일에서 적 플래그 제거
         foreach (ManageKeyBoard.key key in keyBoard)
         {
             if (key.name.Equals(this.transform.parent.name))
@@ -69,11 +50,47 @@ public class Enemy : MonoBehaviour
                 break;
             }
         }
+
+        // 플레이어에 가까운 타일을 찾기
+        float minDistance = float.MaxValue;
+        string bestKey = null;
+
+        foreach (string keyName in adjList[this.transform.parent.name])
+        {
+            foreach (ManageKeyBoard.key key in keyBoard)
+            {
+                if (key.name.Equals(keyName) && !key.isEnemy)
+                {
+                    float distanceToPlayer = Vector2.Distance(GameObject.Find(keyName).transform.position, GameObject.Find("Player").transform.position);
+                    if (distanceToPlayer < minDistance)
+                    {
+                        minDistance = distanceToPlayer;
+                        bestKey = keyName;
+                        moved = true;
+                    }
+                }
+            }
+        }
+
+        // 최적의 타일로 이동
+        if (moved && bestKey != null)
+        {
+            MoveToKey(bestKey);
+            foreach (ManageKeyBoard.key key in keyBoard)
+            {
+                if (key.name.Equals(bestKey))
+                {
+                    key.isEnemy = true;
+                    break;
+                }
+            }
+        }
+
         nowCycle = moveCycle;
     }
-    public void MoveToKey(string key)//이동된 키값에 오브젝트와 부모 이동
+
+    public void MoveToKey(string key)
     {
-        //key = "back_" + key;
         GameObject keyObj = GameObject.Find(key);
         if (keyObj != null)
         {
@@ -81,6 +98,7 @@ public class Enemy : MonoBehaviour
             this.transform.position = keyObj.transform.position;
         }
     }
+
 
     public void GetDamage(int damage)//플레이어에게 데미지 입었을 때 처리
     {

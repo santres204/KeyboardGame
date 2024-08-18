@@ -33,7 +33,7 @@ public class Timer : MonoBehaviour
     {
         attack.GetComponent<Attack>().SummonAttack();//공격 생성
         manageEnemy.GetComponent<ManageEnemy>().moveEnemy();//전체 적 이동(싸이클 각자 판단)
-        GameStart1();
+        Invoke("GameStart1",0.2f);
     }
 
 }

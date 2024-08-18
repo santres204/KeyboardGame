@@ -99,5 +99,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 3
   attackDamage: 1
+<<<<<<< HEAD
   moveCycle: 1
+=======
+  moveCycle: 2
+>>>>>>> yun
   deathEXP: 2

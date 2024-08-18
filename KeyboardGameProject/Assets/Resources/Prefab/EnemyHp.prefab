@@ -83,7 +83,11 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+<<<<<<< HEAD
   m_PresetInfoIsWorld: 0
+=======
+  m_PresetInfoIsWorld: 1
+>>>>>>> yun
 --- !u!114 &7350871255779603874
 MonoBehaviour:
   m_ObjectHideFlags: 0
