@@ -7,7 +7,6 @@ public class Timer : MonoBehaviour
     public GameObject manageEnemy;
     public GameObject manageKeyBoard;
     public GameObject attack;
-    public GameObject player;
     public static float cycle = 2;//한 사이클의 단위
     private float time;
 
@@ -15,7 +14,6 @@ public class Timer : MonoBehaviour
     void Start()
     {
         time = 0;
-        GameStart1();
     }
 
     // Update is called once per frame
@@ -35,5 +33,4 @@ public class Timer : MonoBehaviour
         manageEnemy.GetComponent<ManageEnemy>().moveEnemy();//전체 적 이동(싸이클 각자 판단)
         Invoke("GameStart1",0.2f);
     }
-
 }
