@@ -9,19 +9,30 @@ public class Timer : MonoBehaviour
     public GameObject attack;
     public GameObject player;
     public static float cycle = 2;//한 사이클의 단위
+    public static bool GameIsPaused = false;
     private float time;
 
     // Start is called before the first frame update
     void Start()
     {
         time = 0;
-        GameStart1();
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1f;
+        GameIsPaused = false;
+    }
+    public void Pause()
+    {
+        Time.timeScale = 0f;
+        GameIsPaused = true;
     }
 
     void GameStart1()
@@ -35,5 +46,4 @@ public class Timer : MonoBehaviour
         manageEnemy.GetComponent<ManageEnemy>().moveEnemy();//전체 적 이동(싸이클 각자 판단)
         Invoke("GameStart1",0.2f);
     }
-
 }

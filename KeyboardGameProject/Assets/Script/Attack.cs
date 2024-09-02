@@ -5,18 +5,15 @@ using UnityEngine;
 public class Attack : MonoBehaviour
 {
     public GameObject attack;
+    public int attackDelay;//공격 생성 딜레이
 
-    private List<ManageKeyBoard.key> keyBoard; // 칸 리스트
-    private int attackNum;  //총 공격 개수(현재 스테이지 기준)
-    private int attackDelay = 2;
     private int nowDelay;
-    
+    private List<ManageKeyBoard.key> keyBoard; // 칸 리스트
 
     // Start is called before the first frame update
     void Start()
     {
         StartCoroutine(InitializeKeyBoard());
-        nowDelay = attackDelay;
     }
 
     private IEnumerator InitializeKeyBoard()
@@ -55,11 +52,12 @@ public class Attack : MonoBehaviour
 
     public void SummonAttack()// 공격 소환
     {
-        if (nowDelay > 0)//적 소환 주기 계산
+        if (nowDelay > 0)
         {
             nowDelay -= 1;
             return;
         }
+        nowDelay = attackDelay;
         int i, num = 0;
         for(i = 0; i < ManageKeyBoard.numV; ++i)//로직 수정해야함
         {
@@ -79,7 +77,6 @@ public class Attack : MonoBehaviour
             keyBoard[num].isAttack = true;
             keyBoard[num].attack = attackID;
         }
-        nowDelay = attackDelay;
     }
 
     public class Attack_kind

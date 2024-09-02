@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         StartCoroutine(InitializeAdjList()); // 키보드 인접리스트가 완성될때까지 대기하기위함
-        interactAttack = FindObjectOfType<InteractAttack>();
+        interactAttack = FindObjectOfType<InteractAttack>(); 
         turnMove = false;
     }
 
