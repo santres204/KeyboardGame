@@ -1,25 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Enemy : MonoBehaviour
 {
-    public float hp;
-    public int attackDamage;
-    public int moveCycle;
-    public int deathEXP;
+    public float maxhp;//최대 hp
+    public int attackDamage;//공격 데미지
+    public int moveCycle;//이동 싸이클 딜레이
+    public int deathEXP;//플레이어 획득 경험치
+    public float hp;//현재 hp
 
-    private int nowCycle;
+
+    private GameObject enemyHpBar;//hpBar 게이지
+    private int nowCycle;//현재 딜레이
     private Dictionary<string, List<string>> adjList;
     private List<ManageKeyBoard.key> keyBoard;
 
     void Start()
     {
         ManageKeyBoard manageKeyBoard = FindObjectOfType<ManageKeyBoard>();
-        deathEXP = 1;
-        adjList = manageKeyBoard.adjList;
+        enemyHpBar = Instantiate(Resources.Load<GameObject>("Prefab/" + "EnemyHp"), this.transform);
+        enemyHpBar.SetActive(false);
+
         nowCycle = moveCycle;
+        hp = maxhp;
+
+        adjList = manageKeyBoard.adjList;
         keyBoard = manageKeyBoard.keyBoard;
+        
     }
 
     // Update is called once per frame
@@ -33,8 +43,11 @@ public class Enemy : MonoBehaviour
         if (nowCycle > 0)
         {
             nowCycle -= 1;
+            this.transform.Find("Canvas").transform.Find("MoveCycleText").GetComponent<TextMeshProUGUI>().text = (nowCycle).ToString();
             return;
         }
+
+        Vector2 playerPosition = GameObject.Find("Player").transform.position;
 
         bool moved = false;
 
@@ -58,7 +71,7 @@ public class Enemy : MonoBehaviour
             {
                 if (key.name.Equals(keyName) && !key.isEnemy)
                 {
-                    float distanceToPlayer = Vector2.Distance(GameObject.Find(keyName).transform.position, GameObject.Find("Player").transform.position);
+                    float distanceToPlayer = Vector2.Distance(GameObject.Find(keyName).transform.position, playerPosition);
                     if (distanceToPlayer < minDistance)
                     {
                         minDistance = distanceToPlayer;
@@ -84,6 +97,7 @@ public class Enemy : MonoBehaviour
         }
 
         nowCycle = moveCycle;
+        this.transform.Find("Canvas").transform.Find("MoveCycleText").GetComponent<TextMeshProUGUI>().text = (nowCycle).ToString();
     }
 
     public void MoveToKey(string key)
@@ -102,8 +116,25 @@ public class Enemy : MonoBehaviour
         hp -= damage;
         if (hp <= 0)//경험치 획득 및 적 삭제
         {
+            foreach (ManageKeyBoard.key key in keyBoard)
+            {
+                if (key.name.Equals(this.transform.parent.name))
+                {
+                    key.isEnemy = false;
+                    break;
+                }
+            }
+
             FindAnyObjectByType<Experience>().AddEXP(deathEXP);
             Destroy(this.gameObject);
+        }
+        else
+        {
+            if (enemyHpBar.activeInHierarchy == false)
+            {
+                enemyHpBar.SetActive(true);
+            }
+            enemyHpBar.transform.GetComponentInChildren<Slider>().value = hp / maxhp;
         }
     }
 

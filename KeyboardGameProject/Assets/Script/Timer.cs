@@ -7,7 +7,9 @@ public class Timer : MonoBehaviour
     public GameObject manageEnemy;
     public GameObject manageKeyBoard;
     public GameObject attack;
+    public GameObject player;
     public static float cycle = 2;//한 사이클의 단위
+    public static bool GameIsPaused = false;
     private float time;
 
     // Start is called before the first frame update
@@ -20,6 +22,17 @@ public class Timer : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1f;
+        GameIsPaused = false;
+    }
+    public void Pause()
+    {
+        Time.timeScale = 0f;
+        GameIsPaused = true;
     }
 
     void GameStart1()

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public string currentKey; // 현재 위치
+    public bool turnMove;
 
     private Dictionary<string, List<string>> adjList; // 인접리스트
     private InteractAttack interactAttack;
@@ -12,7 +13,8 @@ public class Player : MonoBehaviour
     void Start()
     {
         StartCoroutine(InitializeAdjList()); // 키보드 인접리스트가 완성될때까지 대기하기위함
-        interactAttack = FindObjectOfType<InteractAttack>();
+        interactAttack = FindObjectOfType<InteractAttack>(); 
+        turnMove = false;
     }
 
     private IEnumerator InitializeAdjList()
@@ -47,11 +49,16 @@ public class Player : MonoBehaviour
             currentKey = key.Split('_')[1];
             interactAttack.InputStack(currentKey);
         }
+        turnMove = false;
+        FindFirstObjectByType<Timer>().GameStart2();
     }
 
     void Update()
     {
-        KeyInput();
+        if (turnMove)
+        {
+            KeyInput();
+        }
     }
 
     private void KeyInput()
