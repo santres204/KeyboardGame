@@ -48,6 +48,14 @@ public class Player : MonoBehaviour
             transform.position = keyObj.transform.position;
             currentKey = key.Split('_')[1];
             interactAttack.InputStack(currentKey);//해당 칸 공격 스택에 삽입
+            try
+            {
+                keyObj.transform.Find(currentKey).Find("Enemy1(Clone)").GetComponent<Enemy>().Attack();
+            }
+            catch
+            {
+                Debug.Log("적 X(데미지)");
+            }
         }
         turnMove = false;
         FindFirstObjectByType<Timer>().GameStart2();//이동 후 다음 단계 진행

@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
     public int deathEXP;//플레이어 획득 경험치
     public float hp;//현재 hp
 
+    private GameObject player;
     private GameObject moveCycleText;
     private GameObject enemyHpBar;//hpBar 게이지
     private int nowCycle;//현재 딜레이
@@ -23,9 +24,11 @@ public class Enemy : MonoBehaviour
         ManageKeyBoard manageKeyBoard = FindObjectOfType<ManageKeyBoard>();
         enemyHpBar = transform.Find("Canvas").Find("Slider").gameObject;
         moveCycleText = this.transform.Find("Canvas").transform.Find("MoveCycleText").gameObject;
+        player = GameObject.Find("Player");
 
         nowCycle = moveCycle;
         hp = maxhp;
+
 
         adjList = manageKeyBoard.adjList;
         keyBoard = manageKeyBoard.keyBoard;
@@ -47,7 +50,7 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        GameObject player = GameObject.Find("Player");
+        
 
         bool moved = false;
 
@@ -98,7 +101,7 @@ public class Enemy : MonoBehaviour
 
         if (player.GetComponent<Player>().currentKey.Equals(bestKey))
         {
-            player.GetComponent<PlayerInform>().PlayerDamaged((float)attackDamage);//플레이어 피 데미지
+            Attack();
         }
 
         nowCycle = moveCycle;
@@ -115,6 +118,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void Attack()
+    {
+        player.GetComponent<PlayerInform>().PlayerDamaged((float)attackDamage);//플레이어 피 데미지
+    }
 
     public void GetDamage(int damage)//플레이어에게 데미지 입었을 때 처리
     {
