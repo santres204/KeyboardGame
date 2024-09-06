@@ -12,7 +12,7 @@ public class Enemy : MonoBehaviour
     public int deathEXP;//플레이어 획득 경험치
     public float hp;//현재 hp
 
-
+    private GameObject moveCycleText;
     private GameObject enemyHpBar;//hpBar 게이지
     private int nowCycle;//현재 딜레이
     private Dictionary<string, List<string>> adjList;
@@ -21,8 +21,8 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         ManageKeyBoard manageKeyBoard = FindObjectOfType<ManageKeyBoard>();
-        enemyHpBar = Instantiate(Resources.Load<GameObject>("Prefab/" + "EnemyHp"), this.transform);
-        enemyHpBar.SetActive(false);
+        enemyHpBar = transform.Find("Canvas").Find("Slider").gameObject;
+        moveCycleText = this.transform.Find("Canvas").transform.Find("MoveCycleText").gameObject;
 
         nowCycle = moveCycle;
         hp = maxhp;
@@ -43,11 +43,11 @@ public class Enemy : MonoBehaviour
         if (nowCycle > 0)
         {
             nowCycle -= 1;
-            this.transform.Find("Canvas").transform.Find("MoveCycleText").GetComponent<TextMeshProUGUI>().text = (nowCycle).ToString();
+            moveCycleText.GetComponent<TextMeshProUGUI>().text = (nowCycle).ToString();
             return;
         }
 
-        Vector2 playerPosition = GameObject.Find("Player").transform.position;
+        GameObject player = GameObject.Find("Player");
 
         bool moved = false;
 
@@ -71,7 +71,7 @@ public class Enemy : MonoBehaviour
             {
                 if (key.name.Equals(keyName) && !key.isEnemy)
                 {
-                    float distanceToPlayer = Vector2.Distance(GameObject.Find(keyName).transform.position, playerPosition);
+                    float distanceToPlayer = Vector2.Distance(GameObject.Find(keyName).transform.position, player.transform.position);
                     if (distanceToPlayer < minDistance)
                     {
                         minDistance = distanceToPlayer;
@@ -96,8 +96,13 @@ public class Enemy : MonoBehaviour
             }
         }
 
+        if (player.GetComponent<Player>().currentKey.Equals(bestKey))
+        {
+            player.GetComponent<PlayerInform>().PlayerDamaged((float)attackDamage);//플레이어 피 데미지
+        }
+
         nowCycle = moveCycle;
-        this.transform.Find("Canvas").transform.Find("MoveCycleText").GetComponent<TextMeshProUGUI>().text = (nowCycle).ToString();
+        moveCycleText.GetComponent<TextMeshProUGUI>().text = (nowCycle).ToString();
     }
 
     public void MoveToKey(string key)

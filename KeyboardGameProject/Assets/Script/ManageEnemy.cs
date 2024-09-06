@@ -48,7 +48,7 @@ public class ManageEnemy : MonoBehaviour
 
             
 
-            if (keyBoard[num].isSuburb && !keyBoard[num].isEnemy && player.currentKey != keyBoard[num].name)// 적이 생성 가능할 시에 +1
+            if (keyBoard[num].isSuburb && !keyBoard[num].isEnemy && (player.currentKey != keyBoard[num].name))// 적이 생성 가능할 시에 +1
                 break;
             else
                 random.Add(num);

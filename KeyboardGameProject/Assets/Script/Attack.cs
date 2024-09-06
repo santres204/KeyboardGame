@@ -7,6 +7,7 @@ public class Attack : MonoBehaviour
     public GameObject attack;
     public int attackDelay;//공격 생성 딜레이
 
+    private List<int> random;//공격 생성 중복 처리 리스트
     private int nowDelay;
     private List<ManageKeyBoard.key> keyBoard; // 칸 리스트
 
@@ -14,6 +15,7 @@ public class Attack : MonoBehaviour
     void Start()
     {
         StartCoroutine(InitializeKeyBoard());
+        random = new List<int>();
     }
 
     private IEnumerator InitializeKeyBoard()
@@ -57,26 +59,34 @@ public class Attack : MonoBehaviour
             nowDelay -= 1;
             return;
         }
+
         nowDelay = attackDelay;
         int i, num = 0;
-        for(i = 0; i < ManageKeyBoard.numV; ++i)//로직 수정해야함
-        {
-            num = Random.Range(0, ManageKeyBoard.numV);// 랜덤 범위로 공격 할당
-            Player player = FindObjectOfType<Player>();
+        random.Clear();
+        Player player = FindObjectOfType<Player>();
 
-            if (!keyBoard[num].isAttack && keyBoard[num].name != player.currentKey)
+        for (i = 0; i < ManageKeyBoard.numV; ++i)
+        {
+            do
             {
+                num = Random.Range(0, ManageKeyBoard.numV);// 적이 생성될 수 있는 칸의 범주
+            } while (random.Contains(num));
+
+            if (!keyBoard[num].isAttack && (player.currentKey != keyBoard[num].name))// 적이 생성 가능할 시에 +1
                 break;
-            }
+            else
+                random.Add(num);
         }
         if (i < ManageKeyBoard.numV)
         {
-            int attackID = Random.Range(1, 2);
-            GameObject.Find(keyBoard[num].name).GetComponent<Transform>().Find("Attack(Clone)").GetComponent<SpriteRenderer>().sprite 
+            int attackID = Random.Range(1, 2);//공격 종류 정하기
+            GameObject.Find(keyBoard[num].name).GetComponent<Transform>().Find("Attack(Clone)").GetComponent<SpriteRenderer>().sprite
                 = Resources.Load<Sprite>("Image/" + "attack" + attackID.ToString());
             keyBoard[num].isAttack = true;
             keyBoard[num].attack = attackID;
         }
+
+        
     }
 
     public class Attack_kind

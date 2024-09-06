@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     }
 
 
-    public void MoveToKey(string key)
+    public void MoveToKey(string key)//플레이어 이동시킴
     {
         key = "back_" + key;
         GameObject keyObj = GameObject.Find(key);
@@ -47,10 +47,10 @@ public class Player : MonoBehaviour
         {
             transform.position = keyObj.transform.position;
             currentKey = key.Split('_')[1];
-            interactAttack.InputStack(currentKey);
+            interactAttack.InputStack(currentKey);//해당 칸 공격 스택에 삽입
         }
         turnMove = false;
-        FindFirstObjectByType<Timer>().GameStart2();
+        FindFirstObjectByType<Timer>().GameStart2();//이동 후 다음 단계 진행
     }
 
     void Update()

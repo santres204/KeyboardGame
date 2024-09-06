@@ -55,6 +55,11 @@ public class Experience : MonoBehaviour
         CalcEXPLevel();
     }
 
+    public void InitLevelUpOption()//레벨 업 선택지 초기화
+    {
+
+    }
+
     public void SelectLevelUp()
     {
         selectOption = false;
