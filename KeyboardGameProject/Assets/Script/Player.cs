@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         StartCoroutine(InitializeAdjList()); // 키보드 인접리스트가 완성될때까지 대기하기위함
-        interactAttack = FindObjectOfType<InteractAttack>();
+        interactAttack = FindObjectOfType<InteractAttack>(); 
         turnMove = false;
     }
 
@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     }
 
 
-    public void MoveToKey(string key)
+    public void MoveToKey(string key)//플레이어 이동시킴
     {
         key = "back_" + key;
         GameObject keyObj = GameObject.Find(key);
@@ -47,10 +47,18 @@ public class Player : MonoBehaviour
         {
             transform.position = keyObj.transform.position;
             currentKey = key.Split('_')[1];
-            interactAttack.InputStack(currentKey);
+            interactAttack.InputStack(currentKey);//해당 칸 공격 스택에 삽입
+            try
+            {
+                keyObj.transform.Find(currentKey).Find("Enemy1(Clone)").GetComponent<Enemy>().Attack();
+            }
+            catch
+            {
+                Debug.Log("적 X(데미지)");
+            }
         }
         turnMove = false;
-        FindFirstObjectByType<Timer>().GameStart2();
+        FindFirstObjectByType<Timer>().GameStart2();//이동 후 다음 단계 진행
     }
 
     void Update()

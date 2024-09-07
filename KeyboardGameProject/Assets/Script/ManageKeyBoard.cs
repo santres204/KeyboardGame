@@ -6,6 +6,8 @@ public class ManageKeyBoard : MonoBehaviour
 {
     public Dictionary<string, List<string>> adjList;// 인접리스트
     public List<key> keyBoard;// 각 칸을 보관하는 리스트
+
+
     public static int numV = 45;// 총 정점 개수
     public static int enemyV = 26;// 적이 생성될 수 있는 정점 개수
 
@@ -99,7 +101,7 @@ public class ManageKeyBoard : MonoBehaviour
 
     public class key//각 칸
     {
-        
+        public int enemyDelay = 2;//적 생성 딜레이
         public string name;
         public int attack;// 공격 할당
         public int delay;
@@ -126,10 +128,8 @@ public class ManageKeyBoard : MonoBehaviour
             if (delay == 0)
             {
                 GameObject enemy1 = Instantiate(enemy, GameObject.Find(this.name).transform);
+                enemy1.name = "Enemy1(Clone)";
                 enemy1.SetActive(true);
-                enemy1.GetComponent<Enemy>().hp = 1;
-                enemy1.GetComponent<Enemy>().attackDamage = 1;
-                enemy1.GetComponent<Enemy>().moveCycle = 1;
                 GameObject.Find("back_" + this.name).GetComponent<SpriteRenderer>().color = Color.white;
             }
         }
@@ -140,9 +140,15 @@ public class ManageKeyBoard : MonoBehaviour
             if (enemy)//적이 생성되면 색 변경 
             {
                 GameObject.Find("back_" + this.name).GetComponent<SpriteRenderer>().color = Color.red;
-                 this.delay = 1;
+                this.delay = enemyDelay;
             }
         }
+
+        public void ChangeCreateDelay(int delay)
+        {
+            enemyDelay = delay;
+        }
+
     }
 
     

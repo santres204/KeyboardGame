@@ -12,7 +12,7 @@ public class PlayerInform : MonoBehaviour
 
     void Start()
     {
-        
+        hp = maxHp;
     }
 
     // Update is called once per frame
