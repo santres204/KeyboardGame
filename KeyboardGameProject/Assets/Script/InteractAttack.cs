@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
+using Newtonsoft.Json;
 
 public class InteractAttack : MonoBehaviour
 {
     public GameObject player;
     public string currentKey; // 현재 위치
     public GameObject attackPrefab;
+    public AttackData attackdata;
 
     private Dictionary<string, List<string>> adjList; // 인접리스트
     private List<ManageKeyBoard.key> keyBoard;
@@ -17,6 +20,7 @@ public class InteractAttack : MonoBehaviour
     {
         StartCoroutine(InitializeKeyBoard());
         attackStack = new Stack<int>();
+        JsonLoad();
     }
 
     private IEnumerator InitializeKeyBoard()
@@ -64,35 +68,112 @@ public class InteractAttack : MonoBehaviour
         Player player = FindObjectOfType<Player>();
         currentKey = player.currentKey;
 
-        switch (attackStack.Pop())//각 공격 종류에 따라서 다르게 처리하기
-        {
-            case 1://기본 공격
-                foreach (string key in adjList[currentKey])
-                {
-                    GameObject.Find("back_" + key).GetComponent<SpriteRenderer>().color = Color.green;
-                    try
-                    {
-                        GameObject.Find(key).GetComponent<Transform>().Find("Enemy1(Clone)").GetComponent<Enemy>().GetDamage(1);
-                    }
-                    catch
-                    {
+        string[] list = { };
 
-                    }
+        foreach(var pattern in attackdata.attackPatterns)
+        {
+            if (pattern.Key.Equals(currentKey))
+            {
+                switch (attackStack.Pop())
+                {
+                    case 1:
+                        switch (attackStack.Count)
+                        {
+                            case 0:
+                                list = pattern.Value.horizonOne;
+                                break;
+                            case 1:
+                                list = pattern.Value.horizonTwo;
+                                break;
+                            case 2:
+                                list = pattern.Value.horizonThree;
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case 2:
+                        switch (attackStack.Count)
+                        {
+                            case 0:
+                                list = pattern.Value.upOne;
+                                break;
+                            case 1:
+                                list = pattern.Value.upTwo;
+                                break;
+                            case 2:
+                                list = pattern.Value.upThree;
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case 3:
+                        switch (attackStack.Count)
+                        {
+                            case 0:
+                                list = pattern.Value.downOne;
+                                break;
+                            case 1:
+                                list = pattern.Value.downTwo;
+                                break;
+                            case 2:
+                                list = pattern.Value.downThree;
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case 4:
+                        switch (attackStack.Count)
+                        {
+                            case 0:
+                                list = pattern.Value.aroundOne;
+                                break;
+                            case 1:
+                                list = pattern.Value.aroundTwo;
+                                break;
+                            case 2:
+                                list = pattern.Value.aroundThree;
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
                 }
-                break;
-            default:
-                break;
+            }
         }
 
-        StartCoroutine(InitializeattackColor(adjList[currentKey]));//공격 표시 / 이후 애니메이션으로 구현
+        AttackEffect(list);
+
+        StartCoroutine(InitializeattackColor(list));//공격 표시 / 이후 애니메이션으로 구현
         attackStack.Clear();
     }
 
-    private IEnumerator InitializeattackColor(List<string> keyList)
+    private void AttackEffect(string[] attackList)
+    {
+        foreach (string key in attackList)
+        {
+            Debug.Log("attack" + key);
+            GameObject.Find("back_" + key).GetComponent<SpriteRenderer>().color = Color.green;
+            try
+            {
+                GameObject.Find(key).GetComponent<Transform>().Find("Enemy1(Clone)").GetComponent<Enemy>().GetDamage(1);
+            }
+            catch
+            {
+
+            }
+        }
+    }
+
+    private IEnumerator InitializeattackColor(string[] attackList)
     {
         yield return new WaitForSeconds(Timer.cycle / 2);
 
-        foreach(string key in keyList)
+        foreach(string key in attackList)
         {
             GameObject.Find("back_" + key).GetComponent<SpriteRenderer>().color = Color.white;
         }
@@ -100,13 +181,30 @@ public class InteractAttack : MonoBehaviour
 
     public void InputStack(string currentKey)//스택에 공격 넣기
     {
-        foreach (ManageKeyBoard.key key in keyBoard)
+        foreach (ManageKeyBoard.key key in keyBoard)//현재 칸 찾기
         {
             if (key.name.Equals(currentKey))
             {
-                if (key.isAttack)
+                if (key.isAttack)//공격 존재할 때
                 {
-                    if (attackStack.Count < 3)//최대 스택3 제약
+                    if(attackStack.Count == 0)//스택 비어있을 때
+                    {
+                        attackStack.Push(key.attack);
+                        GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + attackStack.Count.ToString()).GetComponent<SpriteRenderer>().sprite
+                    = Resources.Load<Sprite>("Image/" + "attack" + key.attack.ToString());
+                    }
+                    else if (!attackStack.Peek().Equals(key.attack))//스택의 공격이 다른 경우
+                    {
+                        for (int i = 1; i <= attackStack.Count; ++i)//스택 비우기
+                        {
+                            GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + i.ToString()).GetComponent<SpriteRenderer>().sprite = null;
+                        }
+                        attackStack.Clear();
+                        attackStack.Push(key.attack);
+                        GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + attackStack.Count.ToString()).GetComponent<SpriteRenderer>().sprite
+                    = Resources.Load<Sprite>("Image/" + "attack" + key.attack.ToString());
+                    }
+                    else if (attackStack.Count < 3)//최대 스택3 제약
                     {
                         attackStack.Push(key.attack);
                         GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + attackStack.Count.ToString()).GetComponent<SpriteRenderer>().sprite
@@ -125,4 +223,57 @@ public class InteractAttack : MonoBehaviour
         
     }
 
+    // JSON 파일을 로드하고 데이터를 파싱하는 함수
+    private void JsonLoad()
+    {
+        // JSON 파일 경로
+        string path = Path.Combine(Application.dataPath, "Resources/Json/keyboardMapData.json");
+
+        if (File.Exists(path))
+        {
+            string jsonData = File.ReadAllText(path);
+
+            // JsonConvert를 사용해 Dictionary<string, AttackPattern> 포함 JSON 데이터를 파싱
+            attackdata = JsonConvert.DeserializeObject<AttackData>(jsonData);
+
+            if (attackdata != null && attackdata.attackPatterns != null)
+            {
+                
+            }
+            else
+            {
+                Debug.LogError("attackData 또는 attackPatterns가 null이거나 데이터가 없습니다");
+            }
+        }
+        else
+        {
+            Debug.LogError("파일을 찾을 수 없습니다");
+        }
+    }
+}
+
+
+
+[System.Serializable]
+public class AttackPattern
+{
+    public int[] position;        // 위치 데이터
+    public string[] horizonOne;   // 1단계 가로 공격 범위
+    public string[] horizonTwo;   // 2단계 가로 공격 범위
+    public string[] horizonThree; // 3단계 가로 공격 범위
+    public string[] upOne;        // 1단계 위쪽 공격 범위
+    public string[] upTwo;        // 2단계 위쪽 공격 범위
+    public string[] upThree;      // 3단계 위쪽 공격 범위
+    public string[] downOne;      // 1단계 아래쪽 공격 범위
+    public string[] downTwo;      // 2단계 아래쪽 공격 범위
+    public string[] downThree;    // 3단계 아래쪽 공격 범위
+    public string[] aroundOne;    // 1단계 주변 공격 범위
+    public string[] aroundTwo;    // 2단계 주변 공격 범위
+    public string[] aroundThree;  // 3단계 주변 공격 범위
+}
+
+[System.Serializable]
+public class AttackData
+{
+    public Dictionary<string, AttackPattern> attackPatterns; // 패턴을 담는 Dictionary
 }

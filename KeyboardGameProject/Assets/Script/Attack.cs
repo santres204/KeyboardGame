@@ -79,7 +79,7 @@ public class Attack : MonoBehaviour
         }
         if (i < ManageKeyBoard.numV)
         {
-            int attackID = Random.Range(1, 2);//공격 종류 정하기
+            int attackID = Random.Range(1, 5);//공격 종류 정하기
             GameObject.Find(keyBoard[num].name).GetComponent<Transform>().Find("Attack(Clone)").GetComponent<SpriteRenderer>().sprite
                 = Resources.Load<Sprite>("Image/" + "attack" + attackID.ToString());
             keyBoard[num].isAttack = true;
