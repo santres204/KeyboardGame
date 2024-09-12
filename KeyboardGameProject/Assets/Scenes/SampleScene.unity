@@ -1605,6 +1605,8 @@ MonoBehaviour:
   player: {fileID: 1977858302}
   currentKey: 
   attackPrefab: {fileID: 4736642304755326768, guid: 7ab128bd266b1c1469c2bbda7d57932a, type: 3}
+  attackdata:
+    attackPatterns: []
 --- !u!1 &157838295
 GameObject:
   m_ObjectHideFlags: 0
