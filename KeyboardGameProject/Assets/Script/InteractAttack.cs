@@ -154,9 +154,12 @@ public class InteractAttack : MonoBehaviour
 
     private void AttackEffect(string[] attackList)
     {
+        string x = "";
+
         foreach (string key in attackList)
         {
-            Debug.Log("attack" + key);
+            // Debug.Log("attack" + key);
+            x += key;
             GameObject.Find("back_" + key).GetComponent<SpriteRenderer>().color = Color.green;
             try
             {
@@ -167,6 +170,8 @@ public class InteractAttack : MonoBehaviour
 
             }
         }
+
+        Debug.Log("attackList : " + x);
     }
 
     private IEnumerator InitializeattackColor(string[] attackList)
@@ -226,19 +231,19 @@ public class InteractAttack : MonoBehaviour
     // JSON 파일을 로드하고 데이터를 파싱하는 함수
     private void JsonLoad()
     {
-        // JSON 파일 경로
-        string path = Path.Combine(Application.dataPath, "Resources/Json/keyboardMapData.json");
+        // Resources 폴더에서 json 파일을 로드 (확장자는 포함하지 않음)
+        TextAsset jsonFile = Resources.Load<TextAsset>("Json/keyboardMapData");
 
-        if (File.Exists(path))
+        if (jsonFile != null)
         {
-            string jsonData = File.ReadAllText(path);
+            string jsonData = jsonFile.text;
 
             // JsonConvert를 사용해 Dictionary<string, AttackPattern> 포함 JSON 데이터를 파싱
             attackdata = JsonConvert.DeserializeObject<AttackData>(jsonData);
 
             if (attackdata != null && attackdata.attackPatterns != null)
             {
-                
+                Debug.Log("attackData 로드 완료");
             }
             else
             {
@@ -250,6 +255,7 @@ public class InteractAttack : MonoBehaviour
             Debug.LogError("파일을 찾을 수 없습니다");
         }
     }
+
 }
 
 
@@ -267,7 +273,7 @@ public class AttackPattern
     public string[] downOne;      // 1단계 아래쪽 공격 범위
     public string[] downTwo;      // 2단계 아래쪽 공격 범위
     public string[] downThree;    // 3단계 아래쪽 공격 범위
-    public string[] aroundOne;    // 1단계 주변 공격 범위
+    public string[] aroundOne;    // 1단계 주변 공격 범위   
     public string[] aroundTwo;    // 2단계 주변 공격 범위
     public string[] aroundThree;  // 3단계 주변 공격 범위
 }
