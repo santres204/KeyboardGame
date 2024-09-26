@@ -156,7 +156,12 @@ public class InteractAttack : MonoBehaviour
     {
         foreach (string key in attackList)
         {
+<<<<<<< HEAD
             Debug.Log("attack" + key);
+=======
+            // Debug.Log("attack" + key);
+            x += key;
+>>>>>>> parent of 24f0c05 (add tap function)
             GameObject.Find("back_" + key).GetComponent<SpriteRenderer>().color = Color.green;
             try
             {
@@ -250,6 +255,7 @@ public class InteractAttack : MonoBehaviour
             Debug.LogError("파일을 찾을 수 없습니다");
         }
     }
+
 }
 
 
