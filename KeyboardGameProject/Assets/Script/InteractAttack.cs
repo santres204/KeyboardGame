@@ -14,6 +14,8 @@ public class InteractAttack : MonoBehaviour
     private Dictionary<string, List<string>> adjList; // 인접리스트
     private List<ManageKeyBoard.key> keyBoard;
     private Stack<int> attackStack;
+    private bool isTabPressed = false; // 'tab' 키의 상태를 저장하는 변수
+    private string[] currentAttackRange = new string[] { }; // 현재 공격 범위를 저장하는 배열
 
     // Start is called before the first frame update
     void Start()
@@ -47,10 +49,104 @@ public class InteractAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))//스페이스바 입력 받기
+        // 'tab' 키 입력 처리
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            isTabPressed = true;
+            ShowAttackRange();
+        }
+        else if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            isTabPressed = false;
+            HideAttackRange();
+        }
+        if (Input.GetKeyDown(KeyCode.Space)) // 스페이스바 입력 받기
         {
             Input_Attack();
         }
+    }
+
+    private void ShowAttackRange()
+    {
+        // 현재 공격 범위 계산
+        CalculateCurrentAttackRange();
+        // 공격 범위 표시
+        foreach (string key in currentAttackRange)
+        {
+            GameObject tile = GameObject.Find("back_" + key);
+            if (tile != null)
+            {
+                SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.color = Color.yellow;
+                }
+            }
+        }
+    }
+    private void HideAttackRange()
+    {
+        // 공격 범위 표시 해제
+        foreach (string key in currentAttackRange)
+        {
+            GameObject tile = GameObject.Find("back_" + key);
+            if (tile != null)
+            {
+                SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.color = Color.white;
+                }
+            }
+        }
+        currentAttackRange = new string[] { };
+    }
+    private void CalculateCurrentAttackRange()
+    {
+        // 공격 범위 계산 로직
+        if (attackStack.Count == 0)
+        {
+            currentAttackRange = new string[] { }; // 공격 스택이 비어있으면 공격 범위 없음
+            return;
+        }
+        Player player = FindObjectOfType<Player>();
+        currentKey = player.currentKey;
+        string[] list = { };
+        foreach (var pattern in attackdata.attackPatterns)
+        {
+            if (pattern.Key.Equals(currentKey))
+            {
+                int attackType = attackStack.Peek(); // 가장 최근의 공격 타입
+                int stackCount = attackStack.Count;
+                switch (attackType)
+                {
+                    case 1:
+                        if (stackCount == 1) list = pattern.Value.horizonOne;
+                        else if (stackCount == 2) list = pattern.Value.horizonTwo;
+                        else if (stackCount >= 3) list = pattern.Value.horizonThree;
+                        break;
+                    case 2:
+                        if (stackCount == 1) list = pattern.Value.upOne;
+                        else if (stackCount == 2) list = pattern.Value.upTwo;
+                        else if (stackCount >= 3) list = pattern.Value.upThree;
+                        break;
+                    case 3:
+                        if (stackCount == 1) list = pattern.Value.downOne;
+                        else if (stackCount == 2) list = pattern.Value.downTwo;
+                        else if (stackCount >= 3) list = pattern.Value.downThree;
+                        break;
+                    case 4:
+                        if (stackCount == 1) list = pattern.Value.aroundOne;
+                        else if (stackCount == 2) list = pattern.Value.aroundTwo;
+                        else if (stackCount >= 3) list = pattern.Value.aroundThree;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            }
+        }
+        currentAttackRange = list;
     }
 
     private void Input_Attack()//공격 입력 받기
@@ -146,26 +242,21 @@ public class InteractAttack : MonoBehaviour
             }
         }
 
-        AttackEffect(list);
+        AttackEffect(list, attackStack.Count + 1);
 
         StartCoroutine(InitializeattackColor(list));//공격 표시 / 이후 애니메이션으로 구현
         attackStack.Clear();
     }
 
-    private void AttackEffect(string[] attackList)
+    private void AttackEffect(string[] attackList, int damage)
     {
         foreach (string key in attackList)
         {
-<<<<<<< HEAD
             Debug.Log("attack" + key);
-=======
-            // Debug.Log("attack" + key);
-            x += key;
->>>>>>> parent of 24f0c05 (add tap function)
             GameObject.Find("back_" + key).GetComponent<SpriteRenderer>().color = Color.green;
             try
             {
-                GameObject.Find(key).GetComponent<Transform>().Find("Enemy1(Clone)").GetComponent<Enemy>().GetDamage(1);
+                GameObject.Find(key).GetComponent<Transform>().Find("Enemy1(Clone)").Find("Enemy").GetComponent<Enemy>().GetDamage(damage);
             }
             catch
             {
@@ -255,7 +346,6 @@ public class InteractAttack : MonoBehaviour
             Debug.LogError("파일을 찾을 수 없습니다");
         }
     }
-
 }
 
 
