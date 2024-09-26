@@ -14,6 +14,8 @@ public class InteractAttack : MonoBehaviour
     private Dictionary<string, List<string>> adjList; // 인접리스트
     private List<ManageKeyBoard.key> keyBoard;
     private Stack<int> attackStack;
+    private bool isTabPressed = false; // 'tab' 키의 상태를 저장하는 변수
+    private string[] currentAttackRange = new string[] { }; // 현재 공격 범위를 저장하는 배열
 
     // Start is called before the first frame update
     void Start()
@@ -42,25 +44,126 @@ public class InteractAttack : MonoBehaviour
         keyBoard = manageKeyBoard.keyBoard;
     }
 
-
-
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))//스페이스바 입력 받기
+        // 'tab' 키 입력 처리
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            isTabPressed = true;
+            ShowAttackRange();
+        }
+        else if (Input.GetKeyUp(KeyCode.Tab))
+        {
+            isTabPressed = false;
+            HideAttackRange();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space)) // 스페이스바 입력 받기
         {
             Input_Attack();
         }
     }
 
-    private void Input_Attack()//공격 입력 받기
+    private void ShowAttackRange()
     {
-        if(attackStack.Count < 1)//스택 없으면 종료
+        // 현재 공격 범위 계산
+        CalculateCurrentAttackRange();
+
+        // 공격 범위 표시
+        foreach (string key in currentAttackRange)
+        {
+            GameObject tile = GameObject.Find("back_" + key);
+            if (tile != null)
+            {
+                SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.color = Color.yellow;
+                }
+            }
+        }
+    }
+
+    private void HideAttackRange()
+    {
+        // 공격 범위 표시 해제
+        foreach (string key in currentAttackRange)
+        {
+            GameObject tile = GameObject.Find("back_" + key);
+            if (tile != null)
+            {
+                SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
+                if (sr != null)
+                {
+                    sr.color = Color.white;
+                }
+            }
+        }
+        currentAttackRange = new string[] { };
+    }
+
+    private void CalculateCurrentAttackRange()
+    {
+        // 공격 범위 계산 로직
+        if (attackStack.Count == 0)
+        {
+            currentAttackRange = new string[] { }; // 공격 스택이 비어있으면 공격 범위 없음
+            return;
+        }
+
+        Player player = FindObjectOfType<Player>();
+        currentKey = player.currentKey;
+
+        string[] list = { };
+
+        foreach (var pattern in attackdata.attackPatterns)
+        {
+            if (pattern.Key.Equals(currentKey))
+            {
+                int attackType = attackStack.Peek(); // 가장 최근의 공격 타입
+                int stackCount = attackStack.Count;
+
+                switch (attackType)
+                {
+                    case 1:
+                        if (stackCount == 1) list = pattern.Value.horizonOne;
+                        else if (stackCount == 2) list = pattern.Value.horizonTwo;
+                        else if (stackCount >= 3) list = pattern.Value.horizonThree;
+                        break;
+                    case 2:
+                        if (stackCount == 1) list = pattern.Value.upOne;
+                        else if (stackCount == 2) list = pattern.Value.upTwo;
+                        else if (stackCount >= 3) list = pattern.Value.upThree;
+                        break;
+                    case 3:
+                        if (stackCount == 1) list = pattern.Value.downOne;
+                        else if (stackCount == 2) list = pattern.Value.downTwo;
+                        else if (stackCount >= 3) list = pattern.Value.downThree;
+                        break;
+                    case 4:
+                        if (stackCount == 1) list = pattern.Value.aroundOne;
+                        else if (stackCount == 2) list = pattern.Value.aroundTwo;
+                        else if (stackCount >= 3) list = pattern.Value.aroundThree;
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            }
+        }
+
+        currentAttackRange = list;
+    }
+
+    private void Input_Attack() // 공격 입력 받기
+    {
+        if (attackStack.Count < 1) // 스택 없으면 종료
         {
             Debug.Log("스택 비어있음");
             return;
         }
-        for (int i = 1; i <= 3; ++i)//스택 비우기
+        for (int i = 1; i <= 3; ++i) // 스택 비우기
         {
             GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + i.ToString()).GetComponent<SpriteRenderer>().sprite = null;
         }
@@ -70,85 +173,45 @@ public class InteractAttack : MonoBehaviour
 
         string[] list = { };
 
-        foreach(var pattern in attackdata.attackPatterns)
+        foreach (var pattern in attackdata.attackPatterns)
         {
             if (pattern.Key.Equals(currentKey))
             {
-                switch (attackStack.Pop())
+                int attackType = attackStack.Pop();
+                int stackCount = attackStack.Count;
+
+                switch (attackType)
                 {
                     case 1:
-                        switch (attackStack.Count)
-                        {
-                            case 0:
-                                list = pattern.Value.horizonOne;
-                                break;
-                            case 1:
-                                list = pattern.Value.horizonTwo;
-                                break;
-                            case 2:
-                                list = pattern.Value.horizonThree;
-                                break;
-                            default:
-                                break;
-                        }
+                        if (stackCount == 0) list = pattern.Value.horizonOne;
+                        else if (stackCount == 1) list = pattern.Value.horizonTwo;
+                        else if (stackCount >= 2) list = pattern.Value.horizonThree;
                         break;
                     case 2:
-                        switch (attackStack.Count)
-                        {
-                            case 0:
-                                list = pattern.Value.upOne;
-                                break;
-                            case 1:
-                                list = pattern.Value.upTwo;
-                                break;
-                            case 2:
-                                list = pattern.Value.upThree;
-                                break;
-                            default:
-                                break;
-                        }
+                        if (stackCount == 0) list = pattern.Value.upOne;
+                        else if (stackCount == 1) list = pattern.Value.upTwo;
+                        else if (stackCount >= 2) list = pattern.Value.upThree;
                         break;
                     case 3:
-                        switch (attackStack.Count)
-                        {
-                            case 0:
-                                list = pattern.Value.downOne;
-                                break;
-                            case 1:
-                                list = pattern.Value.downTwo;
-                                break;
-                            case 2:
-                                list = pattern.Value.downThree;
-                                break;
-                            default:
-                                break;
-                        }
+                        if (stackCount == 0) list = pattern.Value.downOne;
+                        else if (stackCount == 1) list = pattern.Value.downTwo;
+                        else if (stackCount >= 2) list = pattern.Value.downThree;
                         break;
                     case 4:
-                        switch (attackStack.Count)
-                        {
-                            case 0:
-                                list = pattern.Value.aroundOne;
-                                break;
-                            case 1:
-                                list = pattern.Value.aroundTwo;
-                                break;
-                            case 2:
-                                list = pattern.Value.aroundThree;
-                                break;
-                            default:
-                                break;
-                        }
+                        if (stackCount == 0) list = pattern.Value.aroundOne;
+                        else if (stackCount == 1) list = pattern.Value.aroundTwo;
+                        else if (stackCount >= 2) list = pattern.Value.aroundThree;
                         break;
                     default:
                         break;
                 }
+                break;
             }
         }
 
         AttackEffect(list);
 
-        StartCoroutine(InitializeattackColor(list));//공격 표시 / 이후 애니메이션으로 구현
+        StartCoroutine(InitializeattackColor(list)); // 공격 표시 / 이후 애니메이션으로 구현
         attackStack.Clear();
     }
 
@@ -158,7 +221,6 @@ public class InteractAttack : MonoBehaviour
 
         foreach (string key in attackList)
         {
-            // Debug.Log("attack" + key);
             x += key;
             GameObject.Find("back_" + key).GetComponent<SpriteRenderer>().color = Color.green;
             try
@@ -178,29 +240,29 @@ public class InteractAttack : MonoBehaviour
     {
         yield return new WaitForSeconds(Timer.cycle / 2);
 
-        foreach(string key in attackList)
+        foreach (string key in attackList)
         {
             GameObject.Find("back_" + key).GetComponent<SpriteRenderer>().color = Color.white;
         }
     }
 
-    public void InputStack(string currentKey)//스택에 공격 넣기
+    public void InputStack(string currentKey) // 스택에 공격 넣기
     {
-        foreach (ManageKeyBoard.key key in keyBoard)//현재 칸 찾기
+        foreach (ManageKeyBoard.key key in keyBoard) // 현재 칸 찾기
         {
             if (key.name.Equals(currentKey))
             {
-                if (key.isAttack)//공격 존재할 때
+                if (key.isAttack) // 공격 존재할 때
                 {
-                    if(attackStack.Count == 0)//스택 비어있을 때
+                    if (attackStack.Count == 0) // 스택 비어있을 때
                     {
                         attackStack.Push(key.attack);
                         GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + attackStack.Count.ToString()).GetComponent<SpriteRenderer>().sprite
                     = Resources.Load<Sprite>("Image/" + "attack" + key.attack.ToString());
                     }
-                    else if (!attackStack.Peek().Equals(key.attack))//스택의 공격이 다른 경우
+                    else if (!attackStack.Peek().Equals(key.attack)) // 스택의 공격이 다른 경우
                     {
-                        for (int i = 1; i <= attackStack.Count; ++i)//스택 비우기
+                        for (int i = 1; i <= attackStack.Count; ++i) // 스택 비우기
                         {
                             GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + i.ToString()).GetComponent<SpriteRenderer>().sprite = null;
                         }
@@ -209,7 +271,7 @@ public class InteractAttack : MonoBehaviour
                         GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + attackStack.Count.ToString()).GetComponent<SpriteRenderer>().sprite
                     = Resources.Load<Sprite>("Image/" + "attack" + key.attack.ToString());
                     }
-                    else if (attackStack.Count < 3)//최대 스택3 제약
+                    else if (attackStack.Count < 3) // 최대 스택3 제약
                     {
                         attackStack.Push(key.attack);
                         GameObject.Find("back_space").GetComponent<Transform>().Find("Attack" + attackStack.Count.ToString()).GetComponent<SpriteRenderer>().sprite
@@ -225,7 +287,6 @@ public class InteractAttack : MonoBehaviour
                 break;
             }
         }
-        
     }
 
     // JSON 파일을 로드하고 데이터를 파싱하는 함수
@@ -255,10 +316,7 @@ public class InteractAttack : MonoBehaviour
             Debug.LogError("파일을 찾을 수 없습니다");
         }
     }
-
 }
-
-
 
 [System.Serializable]
 public class AttackPattern
