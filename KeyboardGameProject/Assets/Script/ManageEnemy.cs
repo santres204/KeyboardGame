@@ -26,6 +26,15 @@ public class ManageEnemy : MonoBehaviour
             
     }
 
+    public void ChangeDelay(int delay)
+    {
+        foreach(var key in keyBoard)
+        {
+            key.ChangeCreateDelay(delay);
+        }
+        setEnemyDelay = delay;
+    }
+
     public void SummonEnemy()// 利 积己
     {
         if (nowDelay > 0)
@@ -75,11 +84,11 @@ public class ManageEnemy : MonoBehaviour
         {
             try
             {
-                GameObject.Find(key.name).GetComponent<Transform>().Find("Enemy1(Clone)").GetComponent<Enemy>().MoveToPlayer();
+                GameObject.Find(key.name).GetComponent<Transform>().Find("Enemy1(Clone)").Find("Enemy").GetComponent<Enemy>().MoveToPlayer();
             }
             catch
             {
-                Debug.Log("利 粮犁 X");
+                //Debug.Log("利 粮犁 X");
             }
         }
     }
