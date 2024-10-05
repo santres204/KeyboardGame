@@ -11,8 +11,8 @@ public class Experience : MonoBehaviour
     public GameObject EXPBar;
     public GameObject levelUp;
     public GameObject timer;
+    public bool selectOption = false;
 
-    private bool selectOption = false;
     private int EXP;
     private List<int> EXPList;
     private const int maxEXPLevel = 10;
@@ -27,6 +27,7 @@ public class Experience : MonoBehaviour
         {
             InitEXPList();
         }
+        FindAnyObjectByType<ManageEnemy>().ChangeDelay(9 - EXPLevel > 0 ? 9 - EXPLevel : 1);
     }
 
     // Update is called once per frame
@@ -63,7 +64,6 @@ public class Experience : MonoBehaviour
     public void SelectLevelUp()
     {
         selectOption = false;
-        this.GetComponent<Player>().turnMove = true;
         levelUp.SetActive(false);
         timer.GetComponent<Timer>().Resume();
         FindAnyObjectByType<ManageEnemy>().ChangeDelay(9 - EXPLevel > 0 ? 9 - EXPLevel : 1);
@@ -78,7 +78,6 @@ public class Experience : MonoBehaviour
             levelText.GetComponent<TextMeshProUGUI>().text = "Level " + (EXPLevel+1).ToString();
             levelUp.SetActive(true);
             selectOption = true;
-            this.GetComponent<Player>().turnMove = false;
             timer.GetComponent<Timer>().Pause();
         }
         EXPBar.GetComponent<Slider>().value = (float)EXP / (float)EXPList[EXPLevel];

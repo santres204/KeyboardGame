@@ -10,12 +10,11 @@ public class Timer : MonoBehaviour
     public GameObject player;
     public static float cycle = 2;//한 사이클의 단위
     public static bool GameIsPaused = false;
-    private float time;
 
     // Start is called before the first frame update
     void Start()
     {
-        time = 0;
+
     }
 
     // Update is called once per frame
@@ -26,11 +25,13 @@ public class Timer : MonoBehaviour
 
     public void Resume()
     {
+        player.GetComponent<Player>().turnMove = true;
         Time.timeScale = 1f;
         GameIsPaused = false;
     }
     public void Pause()
     {
+        player.GetComponent<Player>().turnMove = false;
         Time.timeScale = 0f;
         GameIsPaused = true;
     }

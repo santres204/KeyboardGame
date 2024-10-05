@@ -24,7 +24,7 @@ public class PlayerInform : MonoBehaviour
     public void PlayerDamaged(float damage)//플레이어가 적에게 데미지 입음
     {
         hp -= damage;
-        hpBar.GetComponent<Slider>().value = hp / maxHp;
+        hpBar.GetComponent<Slider>().value = (int)(hp / maxHp);
         if(hp <= 0)
         {
             Debug.Log("게임 종료");
